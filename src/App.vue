@@ -11,6 +11,7 @@
           @keydown.up.prevent="moveUp"
           @keydown.tab.prevent="shiftRight(index, $event)"
           @keydown.shift.tab.prevent="shiftLeft(index, $event)"
+          @keydown.enter.prevent="addItem(index)"
           v-focus="index === focused"
           @focus="focused = index"
           @blur="focused = null">
@@ -52,6 +53,10 @@ export default {
       if (event.shiftKey)
         return;
       this.list[index].level = Math.min(this.list[index].level + 1, 3);
+    },
+    addItem: function (index) {
+      this.list.splice(index + 1, 0, {value: '', level: this.list[index].level + 1});
+      this.focused = index + 1;
     }
   }
 }
@@ -78,6 +83,7 @@ ul {
 
 li {
   input {
+    width: 90%;
     border: 0px;
     outline: none;
   }
