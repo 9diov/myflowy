@@ -24,6 +24,8 @@
 import { focus } from 'vue-focus';
 import Vue from 'vue';
 
+const MAX_LEVEL = 10;
+
 export default {
   name: 'app',
   directives: { focus: focus },
@@ -52,10 +54,11 @@ export default {
     shiftRight: function (index, event) {
       if (event.shiftKey)
         return;
-      this.list[index].level = Math.min(this.list[index].level + 1, 3);
+      if (index === 0) return;
+      this.list[index].level = Math.min(this.list[index].level + 1, this.list[index - 1].level + 1, MAX_LEVEL);
     },
     addItem: function (index) {
-      this.list.splice(index + 1, 0, {value: '', level: this.list[index].level + 1});
+      this.list.splice(index + 1, 0, {value: '', level: this.list[index].level});
       this.focused = index + 1;
     }
   }
@@ -63,6 +66,8 @@ export default {
 </script>
 
 <style lang="scss">
+$maxLevel: 10;
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -89,20 +94,10 @@ li {
   }
 }
 
-li.level0 {
-  margin-left: 0px;
-}
-
-li.level1 {
-  margin-left: 20px;
-}
-
-li.level2 {
-  margin-left: 40px;
-}
-
-li.level3 {
-  margin-left: 60px;
+@for $i from 0 through $maxLevel {
+  li.level#{$i} {
+    margin-left: 20px * $i;
+  }
 }
 
 a {
